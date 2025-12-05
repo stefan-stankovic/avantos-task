@@ -1,5 +1,5 @@
-import { useGetActionGraphQuery } from '../../features/action-graph/api/get-action-graph';
-import { GraphView } from '../../features/action-graph/components/graph-view';
+import { useGetActionGraphQuery } from '../features/action-graph/api/get-action-graph';
+import { GraphView } from '../features/action-graph/components/graph-view';
 
 const tenantId = '123';
 const blueprintId = 'bp_456';

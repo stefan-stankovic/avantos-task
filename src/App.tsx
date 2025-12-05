@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Outlet } from 'react-router';
-import { Navbar } from './app/components/layout/navbar';
+import { Navbar } from './components/layout/navbar';
 
 const queryClient = new QueryClient();
 
