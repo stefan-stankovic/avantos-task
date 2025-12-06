@@ -115,7 +115,13 @@ const mapEdges = (graph: ActionGraph): FlowEdge[] => {
   }));
 };
 
-export const mapActionGraph = (graph: ActionGraph) => {
+export type MappedActionGraph = {
+  nodes: FlowNode<FlowNodeData>[];
+  edges: FlowEdge[];
+  forms: ActionGraph['forms'];
+};
+
+export const mapActionGraph = (graph: ActionGraph): MappedActionGraph => {
   return {
     nodes: mapNodes(graph),
     edges: mapEdges(graph),

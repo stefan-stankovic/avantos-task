@@ -1,7 +1,7 @@
 import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import { apiClient } from '../../../api/client';
 import { actionGraphApiRoutes } from './api-routes';
-import { mapActionGraph } from './mapper';
+import { MappedActionGraph, mapActionGraph } from './mapper';
 import { ActionGraph } from './types';
 
 type GetActionGraphParams = {
@@ -21,7 +21,10 @@ const getActionGraph = async ({
 
 export const useGetActionGraphQuery = (
   params: GetActionGraphParams,
-  options?: UseQueryOptions<any>
+  options?: Omit<
+    UseQueryOptions<ActionGraph, Error, MappedActionGraph>,
+    'queryKey' | 'queryFn'
+  >
 ) => {
   return useQuery({
     queryKey: ['actionGraph', params.tenantId, params.blueprintId],
