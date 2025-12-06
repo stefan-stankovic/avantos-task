@@ -8,7 +8,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { SearchInput } from '@/components/ui/search-input';
 import {
+  GLOBAL_DATA_SOURCES,
   useFormStateStore,
   type FieldMapping,
 } from '@/stores/form-state-store';
@@ -23,13 +25,28 @@ export function FieldMappingModal() {
   const [selectedMapping, setSelectedMapping] = useState<FieldMapping | null>(
     null
   );
+  const [searchQuery, setSearchQuery] = useState('');
+  const [openAccordions, setOpenAccordions] = useState<string[]>([]);
 
-  // Reset selected mapping when modal opens with new data
   useEffect(() => {
     if (fieldMappingModal) {
       setSelectedMapping(fieldMappingModal.currentMapping || null);
+      setSearchQuery('');
+      setOpenAccordions([]);
     }
   }, [fieldMappingModal]);
+
+  useEffect(() => {
+    if (searchQuery && fieldMappingModal) {
+      const allIds = [
+        ...GLOBAL_DATA_SOURCES.map((s) => s.id),
+        ...fieldMappingModal.availableDependencies.map((d) => d.id),
+      ];
+      setOpenAccordions(allIds);
+    } else if (!searchQuery) {
+      setOpenAccordions([]);
+    }
+  }, [searchQuery, fieldMappingModal]);
 
   if (!fieldMappingModal) return null;
 
@@ -79,13 +96,26 @@ export function FieldMappingModal() {
           </DialogDescription>
         </DialogHeader>
 
+        <div className='mb-4'>
+          <SearchInput
+            placeholder='Search fields...'
+            onDebouncedChange={setSearchQuery}
+          />
+        </div>
+
         <div className='flex-1 overflow-y-auto pr-2 -mr-2'>
-          <Accordion type='single' collapsible className='w-full'>
+          <Accordion
+            type='multiple'
+            value={openAccordions}
+            onValueChange={setOpenAccordions}
+            className='w-full'
+          >
             <GlobalDataAccordion
               onFieldSelect={(formId, formName, fieldName) =>
                 handleFieldSelect(formId, formName, fieldName)
               }
               isFieldSelected={isFieldSelected}
+              searchQuery={searchQuery}
             />
             <DependencyFormsAccordion
               dependencies={fieldMappingModal.availableDependencies}
@@ -93,6 +123,7 @@ export function FieldMappingModal() {
                 handleFieldSelect(formId, formName, fieldName)
               }
               isFieldSelected={isFieldSelected}
+              searchQuery={searchQuery}
             />
           </Accordion>
         </div>

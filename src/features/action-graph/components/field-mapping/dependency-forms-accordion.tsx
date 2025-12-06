@@ -14,12 +14,14 @@ type Props = {
     sourceFieldName: string
   ) => void;
   isFieldSelected: (formId: string, fieldName: string) => boolean;
+  searchQuery?: string;
 };
 
 export function DependencyFormsAccordion({
   dependencies,
   onFieldSelect,
   isFieldSelected,
+  searchQuery = '',
 }: Props) {
   if (dependencies.length === 0) return null;
 
@@ -38,12 +40,23 @@ export function DependencyFormsAccordion({
           </AccordionTrigger>
           <AccordionContent>
             <div className='space-y-2 pl-6 pt-2'>
-              {dependency.formFields.length === 0 ? (
-                <p className='text-sm text-muted-foreground py-2'>
-                  No fields available
-                </p>
-              ) : (
-                dependency.formFields.map((fieldName) => {
+              {(() => {
+                const filteredFields = dependency.formFields.filter(
+                  (fieldName) =>
+                    fieldName.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+
+                if (filteredFields.length === 0) {
+                  return (
+                    <p className='text-sm text-muted-foreground py-2'>
+                      {searchQuery
+                        ? 'No matching fields'
+                        : 'No fields available'}
+                    </p>
+                  );
+                }
+
+                return filteredFields.map((fieldName) => {
                   const isSelected = isFieldSelected(
                     dependency.formId,
                     fieldName
@@ -71,8 +84,8 @@ export function DependencyFormsAccordion({
                       </div>
                     </button>
                   );
-                })
-              )}
+                });
+              })()}
             </div>
           </AccordionContent>
         </AccordionItem>

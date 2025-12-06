@@ -13,9 +13,14 @@ type Props = {
     sourceFieldName: string
   ) => void;
   isFieldSelected: (formId: string, fieldName: string) => boolean;
+  searchQuery?: string;
 };
 
-export function GlobalDataAccordion({ onFieldSelect, isFieldSelected }: Props) {
+export function GlobalDataAccordion({
+  onFieldSelect,
+  isFieldSelected,
+  searchQuery = '',
+}: Props) {
   return (
     <>
       {GLOBAL_DATA_SOURCES.map((globalSource) => (
@@ -31,32 +36,39 @@ export function GlobalDataAccordion({ onFieldSelect, isFieldSelected }: Props) {
           </AccordionTrigger>
           <AccordionContent>
             <div className='space-y-2 pl-6 pt-2'>
-              {globalSource.fields.map((fieldName) => {
-                const isSelected = isFieldSelected(globalSource.id, fieldName);
+              {globalSource.fields
+                .filter((fieldName) =>
+                  fieldName.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+                .map((fieldName) => {
+                  const isSelected = isFieldSelected(
+                    globalSource.id,
+                    fieldName
+                  );
 
-                return (
-                  <button
-                    key={fieldName}
-                    onClick={() =>
-                      onFieldSelect(
-                        globalSource.id,
-                        globalSource.name,
-                        fieldName
-                      )
-                    }
-                    className={`w-full text-left px-4 py-3 rounded-md border transition-all ${
-                      isSelected
-                        ? 'bg-primary/10 border-primary text-primary font-medium'
-                        : 'bg-card hover:bg-accent/50 border-border'
-                    }`}
-                  >
-                    <div className='flex items-center justify-between gap-2'>
-                      <span className='text-sm truncate'>{fieldName}</span>
-                      {isSelected && <Check className='size-4 shrink-0' />}
-                    </div>
-                  </button>
-                );
-              })}
+                  return (
+                    <button
+                      key={fieldName}
+                      onClick={() =>
+                        onFieldSelect(
+                          globalSource.id,
+                          globalSource.name,
+                          fieldName
+                        )
+                      }
+                      className={`w-full text-left px-4 py-3 rounded-md border transition-all ${
+                        isSelected
+                          ? 'bg-primary/10 border-primary text-primary font-medium'
+                          : 'bg-card hover:bg-accent/50 border-border'
+                      }`}
+                    >
+                      <div className='flex items-center justify-between gap-2'>
+                        <span className='text-sm truncate'>{fieldName}</span>
+                        {isSelected && <Check className='size-4 shrink-0' />}
+                      </div>
+                    </button>
+                  );
+                })}
             </div>
           </AccordionContent>
         </AccordionItem>
