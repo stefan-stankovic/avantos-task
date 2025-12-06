@@ -58,3 +58,13 @@ export interface Dependency {
   formId: string;
   formFields: string[];
 }
+export interface FlowNodeData extends Record<string, unknown> {
+  label: string;
+  type: string;
+  formId: string;
+  formFields: string[];
+  dependencyData: {
+    direct: Dependency[];
+    transitive: Dependency[];
+  };
+}

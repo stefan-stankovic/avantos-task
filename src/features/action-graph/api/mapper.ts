@@ -5,7 +5,7 @@ import {
   Position,
 } from '@xyflow/react';
 
-import { ActionGraph, Dependency } from './types';
+import { ActionGraph, Dependency, FlowNodeData } from './types';
 
 const getFormFields = (graph: ActionGraph, formId: string): string[] => {
   const form = graph.forms.find((f) => f.id === formId);
@@ -80,7 +80,7 @@ const getTransitiveDependencies = (
   return transitiveDeps;
 };
 
-const mapNodes = (graph: ActionGraph): FlowNode[] => {
+const mapNodes = (graph: ActionGraph): FlowNode<FlowNodeData>[] => {
   return graph.nodes.map((node) => {
     const formFields = getFormFields(graph, node.data.component_id);
     const directDeps = getDirectDependencies(graph, node.id);
